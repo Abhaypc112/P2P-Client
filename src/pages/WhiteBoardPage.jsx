@@ -77,7 +77,7 @@ const WhiteBordPage = ({roomName:roomId, onLeaveRoom}) => {
     console.log("StopDrawing")
   }
 
-  const drow = (e) => {
+  const draw = (e) => {
     if (!isDrawing.current) return;
     const x = e.nativeEvent.offsetX;
     const y = e.nativeEvent.offsetY;
@@ -85,7 +85,7 @@ const WhiteBordPage = ({roomName:roomId, onLeaveRoom}) => {
     ctx.lineTo(x, y);
     ctx.stroke();
     socket.emit("draw", { x, y, roomId, isStart : false, color : brushColor, size : brushRange });
-    console.log("Drow",x,y)
+    console.log("Draw")
   }
 
   const handleClear = () => {
@@ -130,8 +130,11 @@ const WhiteBordPage = ({roomName:roomId, onLeaveRoom}) => {
       style={{ backgroundColor: 'white', width:"100%"}}
       onMouseDown={startDrawing}
       onMouseUp={stopDrawing}
-      onMouseMove={drow}
+      onMouseMove={draw}
       onMouseLeave={stopDrawing}
+      onTouchStart={startDrawing}
+      onTouchEnd={stopDrawing}
+      onTouchMove={draw}
     />
    </div>
   );
