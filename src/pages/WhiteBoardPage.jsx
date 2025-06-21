@@ -4,7 +4,7 @@ import Button from "../components/button/Button";
 import { IoClose } from "react-icons/io5";
 import { RiMenu3Line } from "react-icons/ri";
 
-const socket = io('http://localhost:5000');
+const socket = io('https://p2p-server-p4zm.onrender.com');
 
 const WhiteBordPage = ({roomName:roomId, onLeaveRoom}) => {
   const isDrawing = useRef(false);

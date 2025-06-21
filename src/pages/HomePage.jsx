@@ -10,7 +10,7 @@ const HomePage = ({onSelectRoom}) => {
     const fetchRooms = async() => {
         setLoading(true);
         try{
-            const res = await axios.get(' http://localhost:5000/api/rooms');
+            const res = await axios.get(' https://p2p-server-p4zm.onrender.com/api/rooms');
             setRooms(res.data);
             console.log(res.data);
         }catch (error) {
@@ -48,7 +48,7 @@ const HomePage = ({onSelectRoom}) => {
                         return(
                             <div key={index} className='flex w-full gap-2'>
                                 <input value={room} className="w-[80%] h-11 border rounded-lg p-3 outline-none" disabled/>
-                                <Button onClick={()=>handleJoin(room)} className='h-11'>Join</Button>
+                                <Button onClick={()=>handleJoin(room)} className='h-11 bg-indigo-600 hover:bg-indigo-700'>Join</Button>
                             </div>
                         )
                     })
@@ -57,7 +57,7 @@ const HomePage = ({onSelectRoom}) => {
             </div>
         <div className='flex flex-col gap-5 w-full justify-center items-center'>
             <input onChange={(e) => setNewRoomName(e.target.value)} value={newRoomName} placeholder="Create new room" className="w-[90%] h-12 border rounded-lg p-3 outline-none"/>
-            <Button onClick={handleCreate} className="w-[90%] py-3.2">Create / Join Room </Button>
+            <Button onClick={handleCreate} className="w-[90%] py-3.2 bg-indigo-600 hover:bg-indigo-700">Create / Join Room </Button>
         </div>
         </div>
     </div>
