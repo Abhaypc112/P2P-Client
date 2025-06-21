@@ -59,10 +59,34 @@ const WhiteBordPage = ({roomName:roomId, onLeaveRoom}) => {
     })
   }, [roomId]);
 
+const getEventCoordinates = (e) => {
+  const canvas = canvasRef.current;
+  const rect = canvas.getBoundingClientRect();
+
+  if (e.touches && e.touches.length > 0) {
+    const touch = e.touches[0];
+    return {
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top,
+    };
+  } else if (e.changedTouches && e.changedTouches.length > 0) {
+    const touch = e.changedTouches[0];
+    return {
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top,
+    };
+  } else {
+    return {
+      x: e.nativeEvent.offsetX,
+      y: e.nativeEvent.offsetY,
+    };
+  }
+};
+
+
   const startDrawing = (e) => {
     isDrawing.current = true;
-    const x = e.nativeEvent.offsetX;
-    const y = e.nativeEvent.offsetY;
+    const{x, y} = getEventCoordinates(e);
     ctx.lineWidth = brushRange;
     ctx.strokeStyle = brushColor;
     ctx.beginPath();
@@ -79,8 +103,7 @@ const WhiteBordPage = ({roomName:roomId, onLeaveRoom}) => {
 
   const draw = (e) => {
     if (!isDrawing.current) return;
-    const x = e.nativeEvent.offsetX;
-    const y = e.nativeEvent.offsetY;
+    const{x, y} = getEventCoordinates(e);
     ctx.strokeStyle = brushColor;
     ctx.lineTo(x, y);
     ctx.stroke();
@@ -127,7 +150,7 @@ const WhiteBordPage = ({roomName:roomId, onLeaveRoom}) => {
     }
      <canvas
       ref={canvasRef}
-      style={{ backgroundColor: 'white', width:"100%"}}
+      style={{ backgroundColor: 'white', width:"100%", touchAction: 'none'}}
       onMouseDown={startDrawing}
       onMouseUp={stopDrawing}
       onMouseMove={draw}
