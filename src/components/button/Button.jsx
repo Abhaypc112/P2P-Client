@@ -5,7 +5,7 @@ const Button = ({ children, onClick, type = 'button', className = '', ...props }
     <button
       type={type}
       onClick={onClick}
-      className={`bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition ${className}`}
+      className={` text-white py-2 px-4 rounded transition ${className}`}
       {...props}
     >
       {children}
