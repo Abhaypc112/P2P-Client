@@ -36,7 +36,7 @@ const HomePage = ({onSelectRoom}) => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r  p-4">
-        <div className='w-[25rem] h-[25rem] shadow-lg rounded-lg flex flex-col justify-center border items-center gap-3'>
+        <div className='w-[90%] md:w-[25rem] h-[25rem] shadow-lg rounded-lg flex flex-col justify-center border items-center gap-3'>
             <div className='w-[90%] h-[50%] flex flex-col gap-3 overflow-auto py-3 scroll-bar-none '>
                 {
                    loading?(
