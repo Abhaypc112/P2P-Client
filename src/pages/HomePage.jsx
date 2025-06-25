@@ -6,11 +6,14 @@ const HomePage = ({onSelectRoom}) => {
     const [rooms, setRooms] = useState([]);
     const [newRoomName, setNewRoomName] = useState('');
     const [loading, setLoading] = useState(true);
+    const API = process.env.NODE_ENV === "development"
+        ? "http://localhost:5000"
+        : "https://p2p-server-p4zm.onrender.com";
 
     const fetchRooms = async() => {
         setLoading(true);
         try{
-            const res = await axios.get(' https://p2p-server-p4zm.onrender.com/api/rooms');
+            const res = await axios.get(`${API}/api/rooms`);
             setRooms(res.data);
             console.log(res.data);
         }catch (error) {

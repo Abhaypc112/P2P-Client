@@ -4,7 +4,11 @@ import Button from "../components/button/Button";
 import { IoClose } from "react-icons/io5";
 import { RiMenu3Line } from "react-icons/ri";
 
-const socket = io('https://p2p-server-p4zm.onrender.com');
+  const API = process.env.NODE_ENV === "development"
+        ? "http://localhost:5000"
+        : "https://p2p-server-p4zm.onrender.com";
+
+const socket = io(API);
 
 const WhiteBordPage = ({roomName:roomId, onLeaveRoom}) => {
   const isDrawing = useRef(false);
@@ -14,6 +18,8 @@ const WhiteBordPage = ({roomName:roomId, onLeaveRoom}) => {
   const [brushRange,setBrushRange] = useState(3);
   const [brushColor, setBrushColor] = useState("#00000");
   const rgb = ['#ff0000', '#00ff00', '#0000ff', '#ffff00'];
+  const [usersList,setUsersList] = useState(0);
+  const [dropDown, setDropDown] = useState(false);
 
     useEffect(() => {
     const canvas = canvasRef.current;
@@ -27,6 +33,10 @@ const WhiteBordPage = ({roomName:roomId, onLeaveRoom}) => {
     socket.emit("join-room", roomId);
     context.beginPath();
     socket.on("load-drawing", (drawingData) => {
+    socket.on("user-count", (users) => {
+      console.log(users)
+      setUsersList(users);
+    });
       drawingData.forEach(({ x, y, isStart, color, size }, index) => {
         if (isStart) {
           context.beginPath()
@@ -83,7 +93,6 @@ const getEventCoordinates = (e) => {
   }
 };
 
-
   const startDrawing = (e) => {
     isDrawing.current = true;
     const{x, y} = getEventCoordinates(e);
@@ -115,13 +124,18 @@ const getEventCoordinates = (e) => {
     socket.emit("clear",(roomId))
   }
 
+  const handleLeaveRoom = () => {
+      socket.emit("leave-room", roomId);
+      onLeaveRoom()
+  }
+
   return (
    <div className="relative font-">
     {
       !showModal?(
         <div className="rounded-full shadow-lg p-3 border h-10 w-10 absolute m-5 cursor-pointer" onClick={()=>setShowModal(true)}><RiMenu3Line/></div>
       ):(
-      <div className=" bg-white w-[15.5rem] h-[15rem] absolute shadow-lg rounded-lg flex flex-col justify-between m-5 p-3">
+      <div className=" bg-white w-[15.5rem] gap-5 absolute shadow-lg rounded-lg flex flex-col justify-between m-5 p-3">
         <span><b>Room ID :</b> {roomId}</span>
         <div className=" rounded-full shadow-lg p-3 border h-10 w-10 absolute bg-white right-5 cursor-pointer" onClick={()=>setShowModal(false)}><IoClose/> </div>
         <div className="flex flex-col gap-2">
@@ -143,7 +157,30 @@ const getEventCoordinates = (e) => {
         </div>
         <div className="flex justify-between gap-2">
           <button className="bg-gray-200 hover:bg-gray-300 w-[8rem] text-nowrap font-semibold text-sm h-10 p-0 rounded-lg text-gray-800" onClick={handleClear} >Clear Board</button>
-          <Button className="bg-red-600 hover:bg-red-700 w-[8rem] text-nowrap font-semibold text-sm h-10 p-0 rounded-lg" onClick={()=>onLeaveRoom()}>Leave Room</Button>
+          <Button className="bg-red-600 hover:bg-red-700 w-[8rem] text-nowrap font-semibold text-sm h-10 p-0 rounded-lg" onClick={handleLeaveRoom}>Leave Room</Button>
+        </div>
+        <div className="">
+              <div className="flex justify-between w-full text-sm font-semibold items-center">
+                <span className="bg-gray-200 rounded-full p-2  flex items-center justify-center" >👤{usersList?.length || 1}</span>
+                <span onClick={()=>setDropDown(!dropDown)} className="bg-indigo-600 text-white p-1 w-12 text-center rounded cursor-pointer">{dropDown?"Close":"View"}</span>
+              </div>
+              {
+                dropDown && (
+                  <div className="h-[10rem] overflow-auto py-2 flex flex-col gap-2">
+                {
+                  usersList && usersList.map((user,index) => {
+                    return(
+                      <div>
+                        <ol className="">
+                          <li className="text-sx">{index+1} -{user}</li>
+                        </ol>
+                      </div>
+                    )
+                  })
+               }
+              </div>
+                )
+              }
         </div>
     </div>
       )
